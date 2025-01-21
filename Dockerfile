@@ -4,8 +4,11 @@ FROM nginx:alpine
 # 复制构建的前端静态文件到 Nginx 的默认目录
 COPY dist/ /usr/share/nginx/html/
 
+# 删除默认配置（可选）
+RUN rm /etc/nginx/conf.d/default.conf
+
 # 替换默认的 nginx 配置文件，如果你有自定义配置
-# COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # 暴露 80 端口
 EXPOSE 80
