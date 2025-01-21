@@ -1,0 +1,10 @@
+version: '3'
+services:
+  frontend:
+    image: nginx:alpine
+    container_name: frontend-container
+    volumes:
+      - ./dist:/usr/share/nginx/html
+    ports:
+      - "80:80"
+    restart: always
