@@ -56,7 +56,7 @@ export function ImageUpload() {
     formData.append("image", image); // 将图片文件添加到表单数据中
 
       try {
-          const response = await axios.post(config.backendUrl, formData, {
+          const response = await axios.post(config.backendUrl + 'uploads/upload_image/', formData, {
           headers: {
               'Content-Type': 'multipart/form-data',
           },
