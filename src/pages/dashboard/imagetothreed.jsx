@@ -53,7 +53,7 @@ export function ImageUpload() {
 
     // 创建 FormData 对象，用于发送图片文件
     const formData = new FormData();
-    formData.append("image", image); // 将图片文件添加到表单数据中
+    formData.append("file", image); // 将图片文件添加到表单数据中
 
       try {
           const response = await axios.post(config.backendUrl + 'uploads/upload_image/', formData, {
