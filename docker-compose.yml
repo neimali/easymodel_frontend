@@ -1,10 +1,13 @@
 version: '3'
+
 services:
   frontend:
     image: nginx:alpine
     container_name: frontend-container
     volumes:
-      - ./dist:/usr/share/nginx/html
+      - ./dist:/usr/share/nginx/html  # 将打包好的前端文件挂载到容器内
+      - ./certbot/conf:/etc/letsencrypt:ro  # 挂载证书文件到 Nginx 容器
     ports:
       - "80:80"
+      - "443:443"  # 添加 HTTPS 端口
     restart: always
