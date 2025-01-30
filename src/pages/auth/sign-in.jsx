@@ -6,9 +6,47 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
+import React, { useState } from 'react';
+import config from "../../config";
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
 
 
 export function SignIn() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isChecked, setIsChecked] = useState(false);
+  const [error, setError] = useState('');
+
+  const dispatch = useDispatch();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    // 发送请求到后端
+    try {
+      const response = await axios.post(config.backendUrl + 'api/token/', {
+        email: email,
+        password: password,
+      });
+
+      if (response.status === 200) {
+        // 登录成功后的处理
+        console.log('Login successful', response.data);
+        // 例如，保存 token 或跳转到首页
+        localStorage.setItem('access_token', access);
+        const { token } = response.data;
+        dispatch(login({ token, email }));
+        console.log('Login successful', response.data);
+        window.location.href = '/';
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed');
+      console.error(err);
+    }
+  };
+
   return (
     <section className="m-8 flex gap-4">
       <div className="w-full lg:w-3/5 mt-24">
@@ -16,7 +54,7 @@ export function SignIn() {
           <Typography variant="h2" className="font-bold mb-4">Sign In</Typography>
           <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">Enter your email and password to Sign In.</Typography>
         </div>
-        <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2">
+        <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2" onSubmit={handleSubmit}>
           <div className="mb-1 flex flex-col gap-6">
             <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
               Your email
@@ -28,6 +66,8 @@ export function SignIn() {
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
               Password
@@ -40,8 +80,11 @@ export function SignIn() {
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+          {error && <p className="text-red-500 text-sm">{error}</p>}
           <Checkbox
             label={
               <Typography
@@ -59,6 +102,8 @@ export function SignIn() {
               </Typography>
             }
             containerProps={{ className: "-ml-2.5" }}
+            checked={isChecked}
+            onChange={() => setIsChecked(!isChecked)}
           />
           <Button className="mt-6" fullWidth>
             Sign In
